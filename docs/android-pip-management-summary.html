@@ -270,12 +270,13 @@
       </article>
 
       <article class="panel">
-        <span class="pill risk">Avoid This Path</span>
-        <h2>What We Should Not Do</h2>
+        <span class="pill good">Requested Focus</span>
+        <h2>What Was Requested</h2>
         <ul>
-          <li>Do not keep investing in Android PiP fixes that still depend on the React Native root activity owning playback.</li>
-          <li>Do not mix ad-tech, DRM rollout, analytics expansion, and PiP stabilization into one first-phase delivery.</li>
-          <li>Do not treat success on one device as evidence that the current abstraction is production-safe.</li>
+          <li>Investigate the Android PiP issue and identify the best implementation approach.</li>
+          <li>Create a working demo React Native app with native Android PiP integration.</li>
+          <li>Validate that native Android playback and PiP can work successfully in practice.</li>
+          <li>Prepare clear deliverables for both technical and management audiences.</li>
         </ul>
       </article>
     </section>
@@ -310,11 +311,11 @@
       </article>
 
       <article class="panel">
-        <h2>Delivery Risks To Manage</h2>
+        <h2>Immediate Next Step</h2>
         <ul>
-          <li>Real production streams may introduce auth, DRM, or ad-specific complexity that the demo intentionally excluded.</li>
-          <li>OEM device validation is still required before rollout.</li>
-          <li>Background playback beyond PiP may require a second implementation phase.</li>
+          <li>Use the demonstrated native Android player activity as the baseline for production integration.</li>
+          <li>Replace the demo stream list with the real app stream sources and validate on target Android devices.</li>
+          <li>Keep the same Android ownership model for PiP instead of moving playback control back into the React Native root activity.</li>
         </ul>
       </article>
     </section>

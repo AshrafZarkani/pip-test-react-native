@@ -382,26 +382,25 @@
       </article>
 
       <article class="card">
-        <h2>Out Of Scope For The First Proof</h2>
+        <h2>Focus Of This Delivery</h2>
         <ul>
-          <li>iOS PiP parity</li>
-          <li>Real production DRM credentials and license integration</li>
-          <li>Ads, interstitials, and IMA workflows</li>
-          <li>Production analytics and crash instrumentation strategy</li>
-          <li>MediaSessionService or foreground-service background playback beyond PiP</li>
+          <li>Investigate why Android PiP is unstable in the existing React Native-style player flow.</li>
+          <li>Recommend the strongest implementation path for Android PiP.</li>
+          <li>Build a demo React Native app that launches native Android playback and PiP.</li>
+          <li>Validate the approach on a connected Android device with working demo streams.</li>
+          <li>Provide technical and management documentation for the result.</li>
         </ul>
       </article>
     </section>
 
     <section class="card">
-      <h2>Production Hardening Roadmap</h2>
+      <h2>Recommended Implementation Path</h2>
       <ol>
-        <li>Integrate the native Android player activity into the real app behind a feature flag.</li>
-        <li>Replace public demo streams with real app manifests, auth headers, and DRM configuration from backend-provided metadata.</li>
-        <li>Add analytics events around playback start, PiP entry, PiP exit, seek, buffering, and errors.</li>
-        <li>Test on Android 11, Android 12+, and OEM-specific devices that previously showed instability.</li>
-        <li>If background playback beyond PiP is required, add a second phase for MediaSessionService and notification controls.</li>
-        <li>Add ad-tech handling separately, because ad lifecycle is a distinct risk area and should not be mixed into PiP stabilization work.</li>
+        <li>Keep React Native responsible for catalog selection, navigation entry, and event display.</li>
+        <li>Route playback into a dedicated native Android player activity built on Media3 ExoPlayer.</li>
+        <li>Handle PiP entry, exit, aspect ratio, and media controls natively inside that activity.</li>
+        <li>Pass stream metadata from JavaScript to Android and build the final playback item natively.</li>
+        <li>Roll this same pattern into the production app after validation with the real stream sources.</li>
       </ol>
     </section>
 
@@ -414,7 +413,7 @@
       </p>
       <p>
         This approach fits Android's model, reduces lifecycle ambiguity, simplifies debugging, and gives the team a
-        stable foundation for HLS, DRM, analytics, and later production hardening.
+        clear path to shipping Android PiP in a more reliable way.
       </p>
       <a class="footer-link" href="index.html">Back to report index</a>
     </section>
