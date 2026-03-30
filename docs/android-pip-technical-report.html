@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Android PiP Technical Report</title>
+  <style>
+    :root {
+      --bg: #0b1117;
+      --panel: #121b24;
+      --panel-alt: #172331;
+      --text: #ecf2f8;
+      --muted: #aac0d4;
+      --line: #254056;
+      --accent: #f6c85c;
+      --accent-2: #78c8ff;
+      --ok: #7dd3a5;
+      --warn: #ffb26b;
+      --shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Segoe UI", "Helvetica Neue", sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(120, 200, 255, 0.14), transparent 28%),
+        radial-gradient(circle at top right, rgba(246, 200, 92, 0.16), transparent 26%),
+        linear-gradient(180deg, #081018 0%, #0b1117 100%);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    main {
+      width: min(1120px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 32px 0 64px;
+    }
+
+    .hero {
+      padding: 32px;
+      border: 1px solid rgba(120, 200, 255, 0.18);
+      border-radius: 28px;
+      background: linear-gradient(145deg, rgba(18, 27, 36, 0.96), rgba(11, 17, 23, 0.92));
+      box-shadow: var(--shadow);
+    }
+
+    .eyebrow {
+      margin: 0 0 10px;
+      color: var(--accent);
+      font-size: 0.85rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    h1,
+    h2,
+    h3 {
+      line-height: 1.2;
+      margin: 0 0 14px;
+    }
+
+    h1 {
+      font-size: clamp(2rem, 5vw, 3.6rem);
+      max-width: 14ch;
+    }
+
+    h2 {
+      font-size: 1.45rem;
+      margin-top: 0;
+    }
+
+    p {
+      margin: 0 0 14px;
+      color: var(--muted);
+    }
+
+    .hero-grid,
+    .grid {
+      display: grid;
+      gap: 18px;
+    }
+
+    .hero-grid {
+      grid-template-columns: 1.8fr 1fr;
+      margin-top: 24px;
+    }
+
+    .grid.two {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .card {
+      padding: 24px;
+      border-radius: 24px;
+      border: 1px solid var(--line);
+      background: rgba(18, 27, 36, 0.92);
+      box-shadow: var(--shadow);
+    }
+
+    .tag-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    .tag {
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(120, 200, 255, 0.1);
+      border: 1px solid rgba(120, 200, 255, 0.22);
+      color: var(--text);
+      font-size: 0.92rem;
+      font-weight: 600;
+    }
+
+    section {
+      margin-top: 22px;
+    }
+
+    ul,
+    ol {
+      margin: 0;
+      padding-left: 20px;
+      color: var(--muted);
+    }
+
+    li + li {
+      margin-top: 8px;
+    }
+
+    .status {
+      display: inline-block;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-weight: 700;
+      font-size: 0.84rem;
+      margin-bottom: 12px;
+    }
+
+    .status.ok {
+      background: rgba(125, 211, 165, 0.14);
+      color: var(--ok);
+      border: 1px solid rgba(125, 211, 165, 0.22);
+    }
+
+    .status.warn {
+      background: rgba(255, 178, 107, 0.12);
+      color: var(--warn);
+      border: 1px solid rgba(255, 178, 107, 0.2);
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+      border-radius: 20px;
+      border: 1px solid var(--line);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 720px;
+      background: rgba(18, 27, 36, 0.92);
+    }
+
+    th,
+    td {
+      padding: 14px 16px;
+      text-align: left;
+      border-bottom: 1px solid rgba(37, 64, 86, 0.7);
+      vertical-align: top;
+    }
+
+    th {
+      color: var(--text);
+      background: rgba(23, 35, 49, 0.92);
+      font-size: 0.92rem;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+    }
+
+    code {
+      padding: 2px 6px;
+      border-radius: 8px;
+      background: rgba(120, 200, 255, 0.1);
+      color: var(--text);
+      font-family: "SFMono-Regular", Consolas, monospace;
+      font-size: 0.92em;
+    }
+
+    .footer-link {
+      margin-top: 28px;
+      display: inline-block;
+      color: var(--accent-2);
+      text-decoration: none;
+      font-weight: 700;
+    }
+
+    @media (max-width: 860px) {
+      .hero-grid,
+      .grid.two {
+        grid-template-columns: 1fr;
+      }
+
+      main {
+        width: min(100% - 20px, 1120px);
+        padding-top: 20px;
+      }
+
+      .hero,
+      .card {
+        padding: 20px;
+        border-radius: 22px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <section class="hero">
+      <p class="eyebrow">Technical Report · March 30, 2026</p>
+      <h1>Android Picture-in-Picture Recommendation For A React Native Media App</h1>
+      <p>
+        This report summarizes the root cause analysis, recommended Android architecture, and proof-of-concept
+        implementation for stabilizing Picture-in-Picture in a React Native video application.
+      </p>
+
+      <div class="hero-grid">
+        <div class="card">
+          <span class="status ok">Recommended Decision</span>
+          <p>
+            Move Android playback and PiP ownership into a dedicated native player activity built on Media3
+            ExoPlayer and MediaSession. Keep React Native responsible for content selection, navigation entry,
+            and event display, but not for PiP lifecycle ownership.
+          </p>
+          <div class="tag-row">
+            <span class="tag">React Native shell</span>
+            <span class="tag">Native Android player</span>
+            <span class="tag">Media3 ExoPlayer</span>
+            <span class="tag">MediaSession</span>
+            <span class="tag">Dedicated PiP activity</span>
+          </div>
+        </div>
+
+        <div class="card">
+          <span class="status warn">Do Not Optimize Further</span>
+          <p>
+            Do not spend additional engineering time trying to harden Android PiP by keeping it inside the React
+            Native root activity or by depending on unstable player-view transitions in a cross-platform video layer.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="grid two">
+      <article class="card">
+        <h2>Problem Statement</h2>
+        <p>
+          The original request was to understand why Android PiP fails on some devices in a React Native media app
+          and to identify the most defensible production approach. The investigation focused on the failure class,
+          not on a single device bug.
+        </p>
+        <ul>
+          <li>PiP failures cluster around lifecycle timing, view ownership, and activity transitions rather than one isolated codec issue.</li>
+          <li>Cross-platform abstractions often treat PiP as a player flag, while Android treats PiP as an activity-level responsibility.</li>
+          <li>Device variation makes JS-timed PiP entry and view hierarchy churn more fragile on OEM Android builds.</li>
+        </ul>
+      </article>
+
+      <article class="card">
+        <h2>Root Cause Summary</h2>
+        <ul>
+          <li>PiP ownership tied to the React Native root activity creates extra lifecycle complexity when the app backgrounds or changes fullscreen state.</li>
+          <li>When the playback surface is reparented, recreated, or swapped during fullscreen and PiP transitions, Android becomes more likely to expose state bugs.</li>
+          <li>JS-triggered PiP entry can race with native player readiness, activity pause or stop, and layout changes.</li>
+          <li>Multiple player instances or ambiguous ownership paths make state synchronization harder during PiP transitions.</li>
+        </ul>
+      </article>
+    </section>
+
+    <section class="card">
+      <h2>Why The Recommended Architecture Is Better</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Concern</th>
+              <th>React Native Root Activity PiP</th>
+              <th>Dedicated Native Player Activity</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>PiP ownership</td>
+              <td>Indirect, coupled to app shell lifecycle</td>
+              <td>Direct, aligned with Android activity model</td>
+            </tr>
+            <tr>
+              <td>Player surface stability</td>
+              <td>Higher risk of remounting, reparenting, and fullscreen churn</td>
+              <td>One activity, one player, one surface</td>
+            </tr>
+            <tr>
+              <td>System controls</td>
+              <td>Often routed through abstraction layers</td>
+              <td>Native MediaSession integration</td>
+            </tr>
+            <tr>
+              <td>Android 8 to 11 fallback</td>
+              <td>More fragile when triggered from JS</td>
+              <td>Handled directly in <code>onUserLeaveHint</code></td>
+            </tr>
+            <tr>
+              <td>Android 12+ auto enter</td>
+              <td>Depends on abstraction compatibility</td>
+              <td>Native <code>setAutoEnterEnabled</code> and dynamic PiP params</td>
+            </tr>
+            <tr>
+              <td>Future DRM support</td>
+              <td>Can require plugin-level workarounds</td>
+              <td>Native <code>MediaItem</code> construction path already supports DRM fields</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="grid two">
+      <article class="card">
+        <h2>Implemented Proof Of Concept</h2>
+        <ul>
+          <li>Bare React Native app used as launcher and diagnostics shell.</li>
+          <li>Dedicated Android <code>VideoPlayerActivity</code> built with Media3 ExoPlayer.</li>
+          <li>Native <code>VideoPlayerModule</code> bridge to launch playback and emit state events back to JS.</li>
+          <li>Manifest configuration for <code>supportsPictureInPicture</code>, <code>resizeableActivity</code>, and relevant config changes.</li>
+          <li>MediaSession attached to the player for native transport and system-level behavior.</li>
+          <li>Playback UI includes progress, buffered state, seek actions, safe-area handling, and tap-to-toggle overlay controls.</li>
+        </ul>
+      </article>
+
+      <article class="card">
+        <h2>Prototype Validation</h2>
+        <ul>
+          <li>TypeScript validation passed with <code>npx tsc --noEmit</code>.</li>
+          <li>Android Kotlin compilation and APK assembly succeeded.</li>
+          <li>Playback launched successfully on the connected Android device.</li>
+          <li>Shareable release APK was built with bundled JavaScript.</li>
+          <li>Prototype content included working HLS and MP4 streams plus a simple series-style catalog.</li>
+        </ul>
+      </article>
+    </section>
+
+    <section class="card">
+      <h2>Reference Architecture</h2>
+      <ol>
+        <li>React Native screen displays content choices and receives event updates.</li>
+        <li>JS sends a stream descriptor to a native Android bridge.</li>
+        <li>Native bridge launches or updates a single-task player activity.</li>
+        <li>Player activity creates one ExoPlayer instance and one MediaSession.</li>
+        <li>PiP parameters are updated natively from player state, video size, and visible bounds.</li>
+        <li>Android 12 and above use auto-enter when playback is ready and active.</li>
+        <li>Android 8 through 11 enter PiP from <code>onUserLeaveHint</code> only when the player is ready and playing.</li>
+        <li>PiP exit returns to the same native player activity, not to a recreated JS player tree.</li>
+      </ol>
+    </section>
+
+    <section class="grid two">
+      <article class="card">
+        <h2>Key Technical Decisions</h2>
+        <ul>
+          <li>Use a dedicated playback activity instead of shrinking the React Native root activity into PiP.</li>
+          <li>Use Media3 instead of layering new fixes on top of fragile cross-platform PiP behavior.</li>
+          <li>Keep the JS contract stream-oriented, not player-oriented.</li>
+          <li>Attach MediaSession early so Android system behavior remains native and predictable.</li>
+          <li>Pause and resume around <code>onStop</code> and <code>onStart</code> instead of relying on generic foreground hooks.</li>
+        </ul>
+      </article>
+
+      <article class="card">
+        <h2>Out Of Scope For The First Proof</h2>
+        <ul>
+          <li>iOS PiP parity</li>
+          <li>Real production DRM credentials and license integration</li>
+          <li>Ads, interstitials, and IMA workflows</li>
+          <li>Production analytics and crash instrumentation strategy</li>
+          <li>MediaSessionService or foreground-service background playback beyond PiP</li>
+        </ul>
+      </article>
+    </section>
+
+    <section class="card">
+      <h2>Production Hardening Roadmap</h2>
+      <ol>
+        <li>Integrate the native Android player activity into the real app behind a feature flag.</li>
+        <li>Replace public demo streams with real app manifests, auth headers, and DRM configuration from backend-provided metadata.</li>
+        <li>Add analytics events around playback start, PiP entry, PiP exit, seek, buffering, and errors.</li>
+        <li>Test on Android 11, Android 12+, and OEM-specific devices that previously showed instability.</li>
+        <li>If background playback beyond PiP is required, add a second phase for MediaSessionService and notification controls.</li>
+        <li>Add ad-tech handling separately, because ad lifecycle is a distinct risk area and should not be mixed into PiP stabilization work.</li>
+      </ol>
+    </section>
+
+    <section class="card">
+      <h2>Final Technical Recommendation</h2>
+      <p>
+        The best implementation is not another attempt to patch Android PiP inside a React Native video abstraction.
+        The best implementation is a native Android playback activity that owns the player, PiP lifecycle, and system
+        controls directly, while React Native remains the catalog and orchestration shell.
+      </p>
+      <p>
+        This approach fits Android's model, reduces lifecycle ambiguity, simplifies debugging, and gives the team a
+        stable foundation for HLS, DRM, analytics, and later production hardening.
+      </p>
+      <a class="footer-link" href="index.html">Back to report index</a>
+    </section>
+  </main>
+</body>
+</html>

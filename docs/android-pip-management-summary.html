@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Android PiP Management Summary</title>
+  <style>
+    :root {
+      --bg: #f4efe4;
+      --paper: #fffaf0;
+      --paper-2: #f8f1e1;
+      --ink: #1f1a14;
+      --muted: #5d5548;
+      --line: #ddcaa1;
+      --accent: #b96b2c;
+      --accent-2: #0f6b78;
+      --good: #1d7d55;
+      --risk: #8f4c2f;
+      --shadow: 0 22px 50px rgba(39, 25, 12, 0.12);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Georgia, "Times New Roman", serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at top left, rgba(185, 107, 44, 0.15), transparent 30%),
+        linear-gradient(180deg, #f7f1e6 0%, #f4efe4 100%);
+    }
+
+    main {
+      width: min(1080px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 30px 0 60px;
+    }
+
+    .hero,
+    .panel {
+      background: rgba(255, 250, 240, 0.96);
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      box-shadow: var(--shadow);
+    }
+
+    .hero {
+      padding: 32px;
+    }
+
+    .panel {
+      padding: 24px;
+    }
+
+    .eyebrow {
+      margin: 0 0 10px;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      font-size: 0.82rem;
+      font-weight: 700;
+      font-family: "Segoe UI", "Helvetica Neue", sans-serif;
+    }
+
+    h1,
+    h2,
+    h3 {
+      margin: 0 0 12px;
+      line-height: 1.2;
+    }
+
+    h1 {
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      max-width: 16ch;
+    }
+
+    h2 {
+      font-size: 1.45rem;
+    }
+
+    p {
+      margin: 0 0 12px;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    .grid {
+      display: grid;
+      gap: 18px;
+      margin-top: 20px;
+    }
+
+    .grid.two {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .decision {
+      margin-top: 20px;
+      padding: 18px 20px;
+      border-radius: 20px;
+      background: linear-gradient(135deg, rgba(15, 107, 120, 0.08), rgba(185, 107, 44, 0.08));
+      border: 1px solid rgba(15, 107, 120, 0.18);
+    }
+
+    .pill {
+      display: inline-block;
+      margin-bottom: 10px;
+      padding: 7px 10px;
+      border-radius: 999px;
+      font-family: "Segoe UI", "Helvetica Neue", sans-serif;
+      font-size: 0.82rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .pill.good {
+      color: var(--good);
+      background: rgba(29, 125, 85, 0.1);
+      border: 1px solid rgba(29, 125, 85, 0.16);
+    }
+
+    .pill.risk {
+      color: var(--risk);
+      background: rgba(143, 76, 47, 0.1);
+      border: 1px solid rgba(143, 76, 47, 0.16);
+    }
+
+    ul,
+    ol {
+      margin: 0;
+      padding-left: 20px;
+      color: var(--muted);
+    }
+
+    li + li {
+      margin-top: 8px;
+    }
+
+    .metrics {
+      display: grid;
+      gap: 14px;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      margin-top: 20px;
+    }
+
+    .metric {
+      padding: 18px;
+      border-radius: 18px;
+      background: var(--paper-2);
+      border: 1px solid var(--line);
+    }
+
+    .metric strong {
+      display: block;
+      font-size: 1.7rem;
+      color: var(--ink);
+    }
+
+    .timeline {
+      display: grid;
+      gap: 14px;
+    }
+
+    .step {
+      padding: 16px 18px;
+      border-radius: 18px;
+      background: var(--paper-2);
+      border: 1px solid var(--line);
+    }
+
+    .footer-link {
+      margin-top: 24px;
+      display: inline-block;
+      color: var(--accent-2);
+      font-weight: 700;
+      text-decoration: none;
+      font-family: "Segoe UI", "Helvetica Neue", sans-serif;
+    }
+
+    @media (max-width: 860px) {
+      .grid.two,
+      .metrics {
+        grid-template-columns: 1fr;
+      }
+
+      main {
+        width: min(100% - 20px, 1080px);
+        padding-top: 20px;
+      }
+
+      .hero,
+      .panel {
+        padding: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <section class="hero">
+      <p class="eyebrow">Management Summary · March 30, 2026</p>
+      <h1>Decision Brief For Android Picture-in-Picture In The Media App</h1>
+      <p>
+        The investigation and prototype point to one clear conclusion: Android Picture-in-Picture should be owned by
+        a native Android player activity, not by the React Native app shell or a cross-platform player abstraction.
+      </p>
+
+      <div class="decision">
+        <span class="pill good">Recommended Decision</span>
+        <p>
+          Approve a native Android playback path for PiP, using Media3 ExoPlayer and MediaSession, while keeping
+          React Native as the content launcher and UI shell.
+        </p>
+      </div>
+
+      <div class="metrics">
+        <div class="metric">
+          <strong>Lower</strong>
+          Lifecycle risk versus keeping PiP inside the React Native root activity.
+        </div>
+        <div class="metric">
+          <strong>Higher</strong>
+          Production confidence because Android controls and PiP behavior remain native.
+        </div>
+        <div class="metric">
+          <strong>Reusable</strong>
+          Foundation for HLS, DRM, analytics, and later production hardening.
+        </div>
+      </div>
+    </section>
+
+    <section class="grid two">
+      <article class="panel">
+        <h2>What Was Investigated</h2>
+        <p>
+          We reviewed the failure pattern around Android PiP in a React Native media flow and built a working native
+          Android proof of concept to test the recommended architecture under real playback conditions.
+        </p>
+        <ul>
+          <li>Upstream failure reports and behavior patterns around Android PiP integrations.</li>
+          <li>Android PiP lifecycle requirements and Media3 guidance.</li>
+          <li>A native Android prototype launched from React Native and tested on a connected device.</li>
+        </ul>
+      </article>
+
+      <article class="panel">
+        <h2>What We Learned</h2>
+        <ul>
+          <li>The problem is architectural, not just a small library bug.</li>
+          <li>Android expects PiP to be handled at the activity layer.</li>
+          <li>Keeping PiP inside a cross-platform player stack adds lifecycle and view-ownership risk.</li>
+          <li>A native Android player path is the more defensible long-term solution.</li>
+        </ul>
+      </article>
+    </section>
+
+    <section class="grid two">
+      <article class="panel">
+        <span class="pill good">Prototype Outcome</span>
+        <h2>What The Proof Of Concept Delivered</h2>
+        <ul>
+          <li>A React Native launcher app with a native Android playback activity.</li>
+          <li>Media3 ExoPlayer playback with MediaSession and PiP support.</li>
+          <li>Working transport controls, progress, buffering, seek actions, and safe-area handling.</li>
+          <li>A shareable APK built from the prototype.</li>
+        </ul>
+      </article>
+
+      <article class="panel">
+        <span class="pill risk">Avoid This Path</span>
+        <h2>What We Should Not Do</h2>
+        <ul>
+          <li>Do not keep investing in Android PiP fixes that still depend on the React Native root activity owning playback.</li>
+          <li>Do not mix ad-tech, DRM rollout, analytics expansion, and PiP stabilization into one first-phase delivery.</li>
+          <li>Do not treat success on one device as evidence that the current abstraction is production-safe.</li>
+        </ul>
+      </article>
+    </section>
+
+    <section class="panel">
+      <h2>Recommended Delivery Approach</h2>
+      <div class="timeline">
+        <div class="step">
+          <strong>Phase 1: Native Android PiP foundation</strong>
+          Build or integrate the dedicated Android player activity, hook it into the existing React Native navigation
+          and content metadata flow, and validate on target devices.
+        </div>
+        <div class="step">
+          <strong>Phase 2: Production integration</strong>
+          Replace demo streams with real manifests, auth headers, and DRM-aware metadata from the production backend.
+        </div>
+        <div class="step">
+          <strong>Phase 3: Hardening</strong>
+          Add analytics, broader device coverage, error monitoring, and any required background playback work.
+        </div>
+      </div>
+    </section>
+
+    <section class="grid two">
+      <article class="panel">
+        <h2>Business Value</h2>
+        <ul>
+          <li>Reduces the risk of PiP failures affecting premium video playback on Android.</li>
+          <li>Creates a cleaner base for future DRM, analytics, and transport requirements.</li>
+          <li>Shortens the path to a supportable Android media stack instead of extending a fragile workaround cycle.</li>
+        </ul>
+      </article>
+
+      <article class="panel">
+        <h2>Delivery Risks To Manage</h2>
+        <ul>
+          <li>Real production streams may introduce auth, DRM, or ad-specific complexity that the demo intentionally excluded.</li>
+          <li>OEM device validation is still required before rollout.</li>
+          <li>Background playback beyond PiP may require a second implementation phase.</li>
+        </ul>
+      </article>
+    </section>
+
+    <section class="panel">
+      <h2>Management Recommendation</h2>
+      <p>
+        Approve the native Android PiP architecture as the path forward. The proof of concept shows that this model is
+        implementable, easier to reason about, and better aligned with Android's media lifecycle than continuing to
+        push PiP through a React Native player abstraction.
+      </p>
+      <p>
+        In practical terms, the next step is not more debugging of the old path. The next step is integrating the
+        native player activity into the production Android flow with real streams and staged validation.
+      </p>
+      <a class="footer-link" href="index.html">Back to report index</a>
+    </section>
+  </main>
+</body>
+</html>
